@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #170824; color: #F4EFF9; font-family: 'Manrope', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #F08BC0; text-decoration: none; }
+    a:hover { color: #E0218A; }
+    ::selection { background: #E0218A; color: #fff; }
+    summary { list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    @keyframes floatA { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px,-50px); } }
+    @keyframes floatB { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px,40px); } }
+  </style>
+</helmet>
+
+<!-- ============ NAV ============ -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(23,8,36,0.78);border-bottom:1px solid rgba(255,255,255,0.07)">
+  <div style="max-width:1200px;margin:0 auto;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(16px,4vw,32px)">
+    <a href="#inicio" style="font-family:'Sora',sans-serif;font-weight:800;font-size:24px;letter-spacing:-0.02em;display:flex;align-items:baseline">
+      <span style="background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">pixels</span><span style="color:#E0218A">.</span>
+    </a>
+    <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:28px">
+        <a href="#nosotros" data-i18n="nav_nosotros" style="color:#CBB8DE;font-size:15px;font-weight:600;transition:color .2s" style-hover="color:#FFFFFF">Nosotros</a>
+        <a href="#servicios" data-i18n="nav_servicios" style="color:#CBB8DE;font-size:15px;font-weight:600;transition:color .2s" style-hover="color:#FFFFFF">Servicios</a>
+        <a href="#portafolio" data-i18n="nav_portafolio" style="color:#CBB8DE;font-size:15px;font-weight:600;transition:color .2s" style-hover="color:#FFFFFF">Portafolio</a>
+        <a href="#planes" data-i18n="nav_planes" style="color:#CBB8DE;font-size:15px;font-weight:600;transition:color .2s" style-hover="color:#FFFFFF">Planes</a>
+        <a href="#faq" style="color:#CBB8DE;font-size:15px;font-weight:600;transition:color .2s" style-hover="color:#FFFFFF">FAQ</a>
+      </div>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button onClick="{{ toggleLang }}" style="background:transparent;border:1px solid rgba(255,255,255,0.25);color:#F4EFF9;border-radius:999px;padding:8px 14px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;cursor:pointer;transition:border-color .2s" style-hover="border-color:#E0218A">{{ langLabel }}</button>
+      <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+        <a href="#contacto" data-i18n="nav_cta" style="display:inline-flex;align-items:center;padding:10px 22px;border-radius:999px;background:linear-gradient(90deg,#4AA3DF,#E0218A);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;transition:transform .25s,box-shadow .25s" style-hover="transform:translateY(-2px);box-shadow:0 10px 26px rgba(224,33,138,0.35);color:#fff">Empezar</a>
+      </sc-if>
+      <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" aria-label="Menú" style="background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:10px">
+          <span style="display:block;width:22px;height:2px;background:#F4EFF9;border-radius:2px"></span>
+          <span style="display:block;width:22px;height:2px;background:#F4EFF9;border-radius:2px"></span>
+          <span style="display:block;width:14px;height:2px;background:#E0218A;border-radius:2px"></span>
+        </button>
+      </sc-if>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MOBILE MENU ============ -->
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:200;background:rgba(23,8,36,0.97);display:flex;flex-direction:column;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:24px"><span style="background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">pixels</span><span style="color:#E0218A">.</span></span>
+      <button onClick="{{ closeMenu }}" aria-label="Cerrar" style="background:transparent;border:1px solid rgba(255,255,255,0.25);color:#F4EFF9;border-radius:999px;width:44px;height:44px;font-size:20px;cursor:pointer">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:48px">
+      <a href="#nosotros" onClick="{{ closeMenu }}" data-i18n="nav_nosotros" style="color:#F4EFF9;font-family:'Sora',sans-serif;font-size:30px;font-weight:700;padding:10px 0">Nosotros</a>
+      <a href="#servicios" onClick="{{ closeMenu }}" data-i18n="nav_servicios" style="color:#F4EFF9;font-family:'Sora',sans-serif;font-size:30px;font-weight:700;padding:10px 0">Servicios</a>
+      <a href="#portafolio" onClick="{{ closeMenu }}" data-i18n="nav_portafolio" style="color:#F4EFF9;font-family:'Sora',sans-serif;font-size:30px;font-weight:700;padding:10px 0">Portafolio</a>
+      <a href="#planes" onClick="{{ closeMenu }}" data-i18n="nav_planes" style="color:#F4EFF9;font-family:'Sora',sans-serif;font-size:30px;font-weight:700;padding:10px 0">Planes</a>
+      <a href="#faq" onClick="{{ closeMenu }}" style="color:#F4EFF9;font-family:'Sora',sans-serif;font-size:30px;font-weight:700;padding:10px 0">FAQ</a>
+      <a href="#contacto" onClick="{{ closeMenu }}" data-i18n="nav_cta" style="display:inline-flex;align-self:flex-start;margin-top:24px;padding:16px 36px;border-radius:999px;background:linear-gradient(90deg,#4AA3DF,#E0218A);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:17px">Empezar</a>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ HERO ============ -->
+<div id="inicio" data-screen-label="Hero" style="position:relative;overflow:hidden;background:#170824">
+  <div style="position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(74,163,223,0.45),transparent 65%);filter:blur(70px);top:-140px;left:-140px;animation:floatA 16s ease-in-out infinite;pointer-events:none"></div>
+  <div style="position:absolute;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle at 60% 60%,rgba(224,33,138,0.4),transparent 65%);filter:blur(80px);bottom:-180px;right:-160px;animation:floatB 20s ease-in-out infinite;pointer-events:none"></div>
+  <div style="position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);top:20%;right:12%;pointer-events:none"></div>
+
+  <!-- Variante A: impacto centrado -->
+  <sc-if value="{{ heroCentered }}" hint-placeholder-val="{{ true }}">
+    <div style="position:relative;max-width:1000px;margin:0 auto;padding:clamp(150px,22vh,220px) clamp(20px,5vw,48px) clamp(90px,14vh,150px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px">
+      <span data-i18n="hero_badge" style="display:inline-flex;padding:8px 18px;border-radius:999px;border:1px solid rgba(224,33,138,0.4);background:rgba(224,33,138,0.08);color:#F08BC0;font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Publicidad + Desarrollo de software</span>
+      <h1 style="margin:0;font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(38px,7vw,76px);line-height:1.08;letter-spacing:-0.02em;text-wrap:balance"><span data-i18n="hero_t1">Creamos ideas que generan </span><span data-i18n="hero_t2" style="background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">GRANDES</span><span data-i18n="hero_t3"> negocios</span></h1>
+      <p data-i18n="hero_sub" style="margin:0;max-width:640px;color:#CBB8DE;font-size:clamp(16px,2vw,19px);line-height:1.6;text-wrap:pretty">Cumplimos los objetivos comerciales de nuestros clientes con un enfoque creativo y tecnológicamente moderno.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+        <a href="#contacto" data-i18n="hero_cta1" style="display:inline-flex;padding:16px 34px;border-radius:999px;background:linear-gradient(90deg,#4AA3DF,#E0218A);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;transition:transform .25s,box-shadow .25s" style-hover="transform:translateY(-2px);box-shadow:0 12px 32px rgba(224,33,138,0.35);color:#fff">¿Cuándo empezamos?</a>
+        <a href="#servicios" data-i18n="hero_cta2" style="display:inline-flex;padding:16px 34px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);color:#F4EFF9;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;transition:border-color .25s" style-hover="border-color:#E0218A;color:#F4EFF9">Ver servicios</a>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Variante B: split con visual -->
+  <sc-if value="{{ heroSplit }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative;max-width:1200px;margin:0 auto;padding:clamp(130px,20vh,190px) clamp(20px,5vw,48px) clamp(80px,12vh,130px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(32px,5vw,64px);align-items:center">
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:22px">
+        <span data-i18n="hero_badge" style="display:inline-flex;padding:8px 18px;border-radius:999px;border:1px solid rgba(224,33,138,0.4);background:rgba(224,33,138,0.08);color:#F08BC0;font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Publicidad + Desarrollo de software</span>
+        <h1 style="margin:0;font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(36px,5.2vw,60px);line-height:1.1;letter-spacing:-0.02em;text-wrap:balance"><span data-i18n="hero_t1">Creamos ideas que generan </span><span data-i18n="hero_t2" style="background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">GRANDES</span><span data-i18n="hero_t3"> negocios</span></h1>
+        <p data-i18n="hero_sub" style="margin:0;max-width:520px;color:#CBB8DE;font-size:17px;line-height:1.6;text-wrap:pretty">Cumplimos los objetivos comerciales de nuestros clientes con un enfoque creativo y tecnológicamente moderno.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <a href="#contacto" data-i18n="hero_cta1" style="display:inline-flex;padding:16px 34px;border-radius:999px;background:linear-gradient(90deg,#4AA3DF,#E0218A);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;transition:transform .25s,box-shadow .25s" style-hover="transform:translateY(-2px);box-shadow:0 12px 32px rgba(224,33,138,0.35);color:#fff">¿Cuándo empezamos?</a>
+          <a href="#servicios" data-i18n="hero_cta2" style="display:inline-flex;padding:16px 34px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);color:#F4EFF9;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;transition:border-color .25s" style-hover="border-color:#E0218A;color:#F4EFF9">Ver servicios</a>
+        </div>
+      </div>
+      <div style="position:relative">
+        <div style="position:relative;border-radius:28px;padding:2px;background:linear-gradient(135deg,rgba(74,163,223,0.7),rgba(224,33,138,0.7))">
+          <div style="border-radius:26px;overflow:hidden;background:#26103D;aspect-ratio:4/5;max-height:520px">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-visual" shape="rect" placeholder="Foto del equipo / reel" hint-size="100%,100%"></x-import>
+          </div>
+        </div>
+        <div data-i18n="hero_chip1" style="position:absolute;top:22px;left:-14px;background:rgba(23,8,36,0.9);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,0.35)">Campañas 360º</div>
+        <div data-i18n="hero_chip2" style="position:absolute;bottom:26px;right:-10px;background:rgba(23,8,36,0.9);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(8px);border-radius:14px;padding:12px 18px;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,0.35)">Clientes de USA a Panamá</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Variante C: tipográfico bold -->
+  <sc-if value="{{ heroBold }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative;max-width:1200px;margin:0 auto;padding:clamp(150px,22vh,220px) clamp(20px,5vw,48px) clamp(90px,14vh,150px);display:flex;flex-direction:column;gap:6px">
+      <span data-i18n="hero_badge" style="display:inline-flex;align-self:flex-start;margin-bottom:20px;padding:8px 18px;border-radius:999px;border:1px solid rgba(224,33,138,0.4);background:rgba(224,33,138,0.08);color:#F08BC0;font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Publicidad + Desarrollo de software</span>
+      <h1 style="margin:0;display:flex;flex-direction:column;font-family:'Sora',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-0.02em;line-height:0.98;font-size:clamp(48px,10vw,120px)">
+        <span data-i18n="hero_b1" style="color:transparent;-webkit-text-stroke:2px rgba(244,239,249,0.7)">Ideas</span>
+        <span data-i18n="hero_b2" style="color:#F4EFF9;font-size:0.42em;letter-spacing:0.02em;margin:10px 0">que generan</span>
+        <span data-i18n="hero_b3" style="background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">Grandes</span>
+        <span data-i18n="hero_b4" style="color:transparent;-webkit-text-stroke:2px rgba(244,239,249,0.7)">Negocios.</span>
+      </h1>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:36px">
+        <a href="#contacto" data-i18n="hero_cta1" style="display:inline-flex;padding:16px 34px;border-radius:999px;background:linear-gradient(90deg,#4AA3DF,#E0218A);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;transition:transform .25s,box-shadow .25s" style-hover="transform:translateY(-2px);box-shadow:0 12px 32px rgba(224,33,138,0.35);color:#fff">¿Cuándo empezamos?</a>
+        <p data-i18n="hero_sub" style="margin:0;max-width:420px;color:#CBB8DE;font-size:15px;line-height:1.55;text-wrap:pretty">Cumplimos los objetivos comerciales de nuestros clientes con un enfoque creativo y tecnológicamente moderno.</p>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+<!-- ============ NOSOTROS ============ -->
+<div id="nosotros" data-screen-label="Nosotros" style="background:#1D0B2E">
+  <div style="max-width:1200px;margin:0 auto;padding:clamp(64px,10vw,110px) clamp(20px,5vw,48px)">
+    <div data-reveal="0">
+      <span data-i18n="about_label" style="font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E0218A">Nosotros</span>
+      <h2 data-i18n="about_h2" style="margin:12px 0 0;font-family:'Sora',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.15;letter-spacing:-0.01em;text-wrap:balance">Tu aliado estratégico a largo plazo</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin-top:40px">
+      <div data-reveal="1" style="border-radius:24px;padding:32px;background:linear-gradient(#26103D,#26103D) padding-box,linear-gradient(120deg,rgba(74,163,223,0.8),rgba(224,33,138,0.8)) border-box;border:1px solid transparent">
+        <h3 data-i18n="mision_t" style="margin:0 0 10px;font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#F08BC0">Misión</h3>
+        <p data-i18n="mision_p" style="margin:0;color:#DCCDEB;font-size:16px;line-height:1.65;text-wrap:pretty">Cumplir los objetivos comerciales de nuestros clientes con un enfoque creativo y tecnológicamente moderno.</p>
+      </div>
+      <div data-reveal="2" style="border-radius:24px;padding:32px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09)">
+        <h3 data-i18n="vision_t" style="margin:0 0 10px;font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:#7FBCE8">Visión</h3>
+        <p data-i18n="vision_p" style="margin:0;color:#DCCDEB;font-size:16px;line-height:1.65;text-wrap:pretty">Ser aliado estratégico de nuestros clientes a largo plazo.</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:20px;margin-top:20px">
+      <div data-reveal="1" style="border-radius:20px;padding:26px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)">
+        <h4 style="margin:0 0 8px;font-family:'Sora',sans-serif;font-size:17px;font-weight:700">TeamWork</h4>
+        <p data-i18n="pillar1_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.6">Equipo multidisciplinario que trabaja en pro de tu marca.</p>
+      </div>
+      <div data-reveal="2" style="border-radius:20px;padding:26px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)">
+        <h4 data-i18n="pillar2_t" style="margin:0 0 8px;font-family:'Sora',sans-serif;font-size:17px;font-weight:700">Portafolio integral</h4>
+        <p data-i18n="pillar2_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.6">Múltiples soluciones para diferentes medios publicitarios.</p>
+      </div>
+      <div data-reveal="3" style="border-radius:20px;padding:26px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)">
+        <h4 data-i18n="pillar3_t" style="margin:0 0 8px;font-family:'Sora',sans-serif;font-size:17px;font-weight:700">Innovación</h4>
+        <p data-i18n="pillar3_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.6">Pensamos fuera de la caja, usando la tecnología como un boost de la creatividad.</p>
+      </div>
+      <div data-reveal="4" style="border-radius:20px;padding:26px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08)">
+        <h4 data-i18n="pillar4_t" style="margin:0 0 8px;font-family:'Sora',sans-serif;font-size:17px;font-weight:700">Regionalización</h4>
+        <p data-i18n="pillar4_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.6">Contamos con clientes desde USA hasta Panamá.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SERVICIOS ============ -->
+<div id="servicios" data-screen-label="Servicios" style="background:#170824">
+  <div style="max-width:1200px;margin:0 auto;padding:clamp(64px,10vw,110px) clamp(20px,5vw,48px)">
+    <div data-reveal="0" style="max-width:640px">
+      <span data-i18n="serv_label" style="font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E0218A">Servicios</span>
+      <h2 data-i18n="serv_h2" style="margin:12px 0 14px;font-family:'Sora',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.15;letter-spacing:-0.01em;text-wrap:balance">Soluciones para cada medio y cada objetivo</h2>
+      <p data-i18n="serv_sub" style="margin:0;color:#B9A8CC;font-size:16px;line-height:1.6;text-wrap:pretty">Cada campaña es una estrategia hecha a la medida: integramos ATL, BTL, social media y tecnología.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px;margin-top:44px">
+      <div data-reveal="1" style="border-radius:22px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);transition:transform .3s,border-color .3s" style-hover="transform:translateY(-5px);border-color:rgba(224,33,138,0.55)">
+        <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;letter-spacing:0.1em;background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">01</span>
+        <h3 data-i18n="s1_t" style="margin:14px 0 10px;font-family:'Sora',sans-serif;font-size:21px;font-weight:700">Social Media</h3>
+        <p data-i18n="s1_p" style="margin:0;color:#B9A8CC;font-size:15px;line-height:1.6">Captamos la atención de tu público en las diferentes redes sociales. Un gran reto, pero con creatividad todo es posible.</p>
+      </div>
+      <div data-reveal="2" style="border-radius:22px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);transition:transform .3s,border-color .3s" style-hover="transform:translateY(-5px);border-color:rgba(224,33,138,0.55)">
+        <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;letter-spacing:0.1em;background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">02</span>
+        <h3 data-i18n="s2_t" style="margin:14px 0 10px;font-family:'Sora',sans-serif;font-size:21px;font-weight:700">Campañas 360º</h3>
+        <p data-i18n="s2_p" style="margin:0;color:#B9A8CC;font-size:15px;line-height:1.6">Estrategias a la medida que integran medios tradicionales y nuevos canales de comunicación.</p>
+      </div>
+      <div data-reveal="3" style="border-radius:22px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);transition:transform .3s,border-color .3s" style-hover="transform:translateY(-5px);border-color:rgba(224,33,138,0.55)">
+        <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;letter-spacing:0.1em;background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">03</span>
+        <h3 data-i18n="s3_t" style="margin:14px 0 10px;font-family:'Sora',sans-serif;font-size:21px;font-weight:700">Webinars</h3>
+        <p data-i18n="s3_p" style="margin:0;color:#B9A8CC;font-size:15px;line-height:1.6">Transformamos educación en ventas: atrae, educa y convierte prospectos en clientes.</p>
+      </div>
+      <div data-reveal="1" style="border-radius:22px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);transition:transform .3s,border-color .3s" style-hover="transform:translateY(-5px);border-color:rgba(224,33,138,0.55)">
+        <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;letter-spacing:0.1em;background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">04</span>
+        <h3 data-i18n="s4_t" style="margin:14px 0 10px;font-family:'Sora',sans-serif;font-size:21px;font-weight:700">Chatbot IA</h3>
+        <p data-i18n="s4_p" style="margin:0;color:#B9A8CC;font-size:15px;line-height:1.6">Atención automatizada 24/7 que convierte el interés en ventas, con embudos y seguimiento de leads.</p>
+      </div>
+      <div data-reveal="2" style="border-radius:22px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);transition:transform .3s,border-color .3s" style-hover="transform:translateY(-5px);border-color:rgba(224,33,138,0.55)">
+        <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;letter-spacing:0.1em;background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">05</span>
+        <h3 data-i18n="s5_t" style="margin:14px 0 10px;font-family:'Sora',sans-serif;font-size:21px;font-weight:700">Impresión y DOOH</h3>
+        <p data-i18n="s5_p" style="margin:0;color:#B9A8CC;font-size:15px;line-height:1.6">Impresión en pequeño y GRAN formato, y publicidad exterior digital para una diferenciación visual.</p>
+      </div>
+      <div data-reveal="3" style="border-radius:22px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);transition:transform .3s,border-color .3s" style-hover="transform:translateY(-5px);border-color:rgba(224,33,138,0.55)">
+        <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;letter-spacing:0.1em;background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">06</span>
+        <h3 data-i18n="s6_t" style="margin:14px 0 10px;font-family:'Sora',sans-serif;font-size:21px;font-weight:700">Desarrollo de software</h3>
+        <p data-i18n="s6_p" style="margin:0;color:#B9A8CC;font-size:15px;line-height:1.6">Usamos la tecnología como un boost de la creatividad: web, automatización y herramientas a la medida.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PORTAFOLIO ============ -->
+<div id="portafolio" data-screen-label="Portafolio" style="background:#1D0B2E">
+  <div style="max-width:1200px;margin:0 auto;padding:clamp(64px,10vw,110px) clamp(20px,5vw,48px)">
+    <div data-reveal="0" style="max-width:640px">
+      <span data-i18n="port_label" style="font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E0218A">Portafolio</span>
+      <h2 data-i18n="port_h2" style="margin:12px 0 14px;font-family:'Sora',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.15;letter-spacing:-0.01em;text-wrap:balance">Marcas que confían en nosotros</h2>
+      <p data-i18n="port_p" style="margin:0;color:#B9A8CC;font-size:16px;line-height:1.6;text-wrap:pretty">Clientes desde USA hasta Panamá, en retail, industria, servicios y más.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:16px;margin-top:44px">
+      <div data-reveal="1" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-1" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+      <div data-reveal="2" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-2" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+      <div data-reveal="3" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-3" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+      <div data-reveal="4" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-4" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+      <div data-reveal="2" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-5" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+      <div data-reveal="3" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-6" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+      <div data-reveal="4" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-7" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+      <div data-reveal="5" style="aspect-ratio:1;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);padding:16px"><x-import component-from-global-scope="image-slot" from="./image-slot.js" id="client-8" shape="rounded" radius="10" fit="contain" placeholder="Logo cliente" hint-size="100%,100%"></x-import></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PLANES ============ -->
+<div id="planes" data-screen-label="Planes" style="background:#170824">
+  <div style="max-width:1200px;margin:0 auto;padding:clamp(64px,10vw,110px) clamp(20px,5vw,48px)">
+    <div data-reveal="0" style="max-width:640px">
+      <span data-i18n="plan_label" style="font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E0218A">Planes</span>
+      <h2 data-i18n="plan_h2" style="margin:12px 0 14px;font-family:'Sora',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.15;letter-spacing:-0.01em;text-wrap:balance">Ni caro, ni barato… rentable</h2>
+      <p data-i18n="plan_p" style="margin:0;color:#B9A8CC;font-size:16px;line-height:1.6;text-wrap:pretty">Paquetes pensados para generar leads y ventas. El presupuesto de pauta es aparte del fee mensual.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px;margin-top:44px;align-items:stretch">
+      <div data-reveal="1" style="display:flex;flex-direction:column;gap:14px;border-radius:24px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09)">
+        <h3 style="margin:0;font-family:'Sora',sans-serif;font-size:20px;font-weight:700">Growth Social Media</h3>
+        <p data-i18n="pl1_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.55">Tráfico y conversión digital con un embudo completo.</p>
+        <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800"><span data-i18n="price_custom">A la medida</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl1_b1" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">TikTok: contenido optimizado para alcance masivo orgánico</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl1_b2" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Meta Ads: consideración y remarketing</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl1_b3" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Google Ads: intención de compra</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl1_b4" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Pauta mensual sugerida de $200 (aparte del fee)</span></div>
+        </div>
+        <a href="#contacto" data-i18n="plan_cta" style="margin-top:auto;display:inline-flex;justify-content:center;padding:13px 24px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);color:#F4EFF9;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;transition:border-color .25s" style-hover="border-color:#E0218A;color:#F4EFF9">Cotizar</a>
+      </div>
+      <div data-reveal="2" style="display:flex;flex-direction:column;gap:14px;border-radius:24px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09)">
+        <h3 style="margin:0;font-family:'Sora',sans-serif;font-size:20px;font-weight:700">Webinars</h3>
+        <p data-i18n="pl2_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.55">Eventos digitales de alto impacto para generar leads calificados.</p>
+        <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800"><span data-i18n="price_custom2">A la medida</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl2_b1" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Concepto, estructura y material gráfico del webinar</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl2_b2" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Campaña de convocatoria y chatbot de captación</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl2_b3" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Soporte técnico integral en vivo</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl2_b4" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Seguimiento post-webinar, reportería y métricas</span></div>
+        </div>
+        <a href="#contacto" data-i18n="plan_cta2" style="margin-top:auto;display:inline-flex;justify-content:center;padding:13px 24px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);color:#F4EFF9;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;transition:border-color .25s" style-hover="border-color:#E0218A;color:#F4EFF9">Cotizar</a>
+      </div>
+      <div data-reveal="3" style="position:relative;display:flex;flex-direction:column;gap:14px;border-radius:24px;padding:30px;background:linear-gradient(#26103D,#26103D) padding-box,linear-gradient(135deg,#4AA3DF,#E0218A) border-box;border:1.5px solid transparent">
+        <span data-i18n="plan_pop" style="position:absolute;top:-12px;right:22px;padding:5px 14px;border-radius:999px;background:linear-gradient(90deg,#4AA3DF,#E0218A);color:#fff;font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase">Popular</span>
+        <h3 style="margin:0;font-family:'Sora',sans-serif;font-size:20px;font-weight:700">Chatbot IA</h3>
+        <p data-i18n="pl3_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.55">Ventas 24/7: automatiza la atención y convierte prospectos en clientes.</p>
+        <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800">$700<span style="font-size:15px;font-weight:600;color:#B9A8CC"><span data-i18n="price_mo">/mes</span> + IVA</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl3_b1" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Licencia de plataforma y configuración personalizada</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl3_b2" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Embudo de ventas automatizado</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl3_b3" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Seguimiento de leads y remarketing enfocado en ventas</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl3_b4" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Reportería y métricas clave</span></div>
+        </div>
+        <a href="#contacto" data-i18n="plan_cta3" style="margin-top:auto;display:inline-flex;justify-content:center;padding:13px 24px;border-radius:999px;background:linear-gradient(90deg,#4AA3DF,#E0218A);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;transition:transform .25s,box-shadow .25s" style-hover="transform:translateY(-2px);box-shadow:0 10px 26px rgba(224,33,138,0.35);color:#fff">Empezar ahora</a>
+      </div>
+      <div data-reveal="4" style="display:flex;flex-direction:column;gap:14px;border-radius:24px;padding:30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09)">
+        <h3 data-i18n="pl4_t" style="margin:0;font-family:'Sora',sans-serif;font-size:20px;font-weight:700">Eventos</h3>
+        <p data-i18n="pl4_p" style="margin:0;color:#B9A8CC;font-size:14.5px;line-height:1.55">Presencia estratégica donde ya existe intención comercial.</p>
+        <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800"><span data-i18n="price_custom3">A la medida</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl4_b1" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Identificación de espacios y gestión de participación</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl4_b2" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Activación de marca en el evento</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl4_b3" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Captación de leads y seguimiento comercial</span></div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="color:#E0218A;font-weight:800">—</span><span data-i18n="pl4_b4" style="color:#DCCDEB;font-size:14.5px;line-height:1.5">Reporte de resultados y oportunidades</span></div>
+        </div>
+        <a href="#contacto" data-i18n="plan_cta4" style="margin-top:auto;display:inline-flex;justify-content:center;padding:13px 24px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);color:#F4EFF9;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;transition:border-color .25s" style-hover="border-color:#E0218A;color:#F4EFF9">Cotizar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FAQ ============ -->
+<div id="faq" data-screen-label="FAQ" style="background:#1D0B2E">
+  <div style="max-width:840px;margin:0 auto;padding:clamp(64px,10vw,110px) clamp(20px,5vw,48px)">
+    <div data-reveal="0">
+      <span style="font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E0218A">FAQ</span>
+      <h2 data-i18n="faq_h2" style="margin:12px 0 0;font-family:'Sora',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.15;letter-spacing:-0.01em">Preguntas frecuentes</h2>
+    </div>
+    <div data-reveal="1" style="margin-top:36px;display:flex;flex-direction:column">
+      <details style="border-bottom:1px solid rgba(255,255,255,0.1)">
+        <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;font-family:'Sora',sans-serif;font-size:17px;font-weight:600"><span data-i18n="f1_q">¿La pauta publicitaria está incluida en el fee mensual?</span><span style="color:#E0218A;font-size:22px;font-weight:400;flex-shrink:0">+</span></summary>
+        <p data-i18n="f1_a" style="margin:0 0 22px;color:#B9A8CC;font-size:15.5px;line-height:1.65;text-wrap:pretty">No, el presupuesto de pauta es aparte del fee mensual. Así puedes escalar la inversión publicitaria según los resultados.</p>
+      </details>
+      <details style="border-bottom:1px solid rgba(255,255,255,0.1)">
+        <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;font-family:'Sora',sans-serif;font-size:17px;font-weight:600"><span data-i18n="f2_q">¿En qué plataformas trabajan?</span><span style="color:#E0218A;font-size:22px;font-weight:400;flex-shrink:0">+</span></summary>
+        <p data-i18n="f2_a" style="margin:0 0 22px;color:#B9A8CC;font-size:15.5px;line-height:1.65;text-wrap:pretty">TikTok, Meta, Google Ads, LinkedIn y Spotify Ads, además de medios tradicionales, impresión y publicidad exterior. Más puntos de contacto = más oportunidades de venta.</p>
+      </details>
+      <details style="border-bottom:1px solid rgba(255,255,255,0.1)">
+        <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;font-family:'Sora',sans-serif;font-size:17px;font-weight:600"><span data-i18n="f3_q">¿Trabajan fuera de El Salvador?</span><span style="color:#E0218A;font-size:22px;font-weight:400;flex-shrink:0">+</span></summary>
+        <p data-i18n="f3_a" style="margin:0 0 22px;color:#B9A8CC;font-size:15.5px;line-height:1.65;text-wrap:pretty">Sí. Contamos con clientes desde USA hasta Panamá y adaptamos cada estrategia a su mercado.</p>
+      </details>
+      <details style="border-bottom:1px solid rgba(255,255,255,0.1)">
+        <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;font-family:'Sora',sans-serif;font-size:17px;font-weight:600"><span data-i18n="f4_q">¿Los precios incluyen IVA?</span><span style="color:#E0218A;font-size:22px;font-weight:400;flex-shrink:0">+</span></summary>
+        <p data-i18n="f4_a" style="margin:0 0 22px;color:#B9A8CC;font-size:15.5px;line-height:1.65;text-wrap:pretty">Los precios se muestran sin IVA; el impuesto se detalla aparte en cada propuesta.</p>
+      </details>
+      <details style="border-bottom:1px solid rgba(255,255,255,0.1)">
+        <summary style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;font-family:'Sora',sans-serif;font-size:17px;font-weight:600"><span data-i18n="f5_q">¿Cómo empezamos?</span><span style="color:#E0218A;font-size:22px;font-weight:400;flex-shrink:0">+</span></summary>
+        <p data-i18n="f5_a" style="margin:0 0 22px;color:#B9A8CC;font-size:15.5px;line-height:1.65;text-wrap:pretty">Escríbenos y agendamos una reunión para conocer tus objetivos. En la primera semana recibes una propuesta hecha a la medida.</p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CTA ============ -->
+<div id="contacto" data-screen-label="CTA" style="background:#1D0B2E">
+  <div style="max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,48px) clamp(64px,10vw,110px)">
+    <div data-reveal="0" style="position:relative;overflow:hidden;border-radius:32px;background:linear-gradient(120deg,#3D7DBB,#E0218A);padding:clamp(48px,8vw,88px) clamp(24px,6vw,72px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px">
+      <div style="position:absolute;width:340px;height:340px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);top:-120px;right:-80px;pointer-events:none"></div>
+      <div style="position:absolute;width:220px;height:220px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);bottom:-90px;left:-50px;pointer-events:none"></div>
+      <h2 data-i18n="cta_h2" style="margin:0;font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(30px,5vw,54px);line-height:1.1;color:#fff;letter-spacing:-0.01em">¿Cuándo empezamos?</h2>
+      <p data-i18n="cta_p" style="margin:0;max-width:560px;color:rgba(255,255,255,0.88);font-size:17px;line-height:1.6;text-wrap:pretty">Cuéntanos tus objetivos comerciales y te proponemos una estrategia rentable, hecha a la medida.</p>
+      <a href="https://www.padsv.com" target="_blank" rel="noopener" data-i18n="cta_btn" style="display:inline-flex;margin-top:8px;padding:16px 36px;border-radius:999px;background:#170824;color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;transition:transform .25s,box-shadow .25s" style-hover="transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,0.35);color:#fff">Escríbenos — www.padsv.com</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<div data-screen-label="Footer" style="background:#170824;border-top:1px solid rgba(255,255,255,0.07)">
+  <div style="max-width:1200px;margin:0 auto;padding:40px clamp(20px,5vw,48px);display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:22px"><span style="background:linear-gradient(90deg,#4AA3DF,#E0218A);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent">pixels</span><span style="color:#E0218A">.</span></span>
+      <span data-i18n="foot_tag" style="color:#B9A8CC;font-size:14px">Creamos ideas que generan GRANDES negocios.</span>
+    </div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+      <a href="#nosotros" data-i18n="foot_nosotros" style="color:#CBB8DE;font-size:14px;font-weight:600">Nosotros</a>
+      <a href="#servicios" data-i18n="foot_servicios" style="color:#CBB8DE;font-size:14px;font-weight:600">Servicios</a>
+      <a href="#planes" data-i18n="foot_planes" style="color:#CBB8DE;font-size:14px;font-weight:600">Planes</a>
+      <a href="https://www.padsv.com" target="_blank" rel="noopener" style="color:#CBB8DE;font-size:14px;font-weight:600">www.padsv.com</a>
+    </div>
+    <span style="color:#7E6B93;font-size:13px">© 2026 pixels.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;heroVariant&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;centered&quot;, &quot;split&quot;, &quot;bold&quot;], &quot;default&quot;: &quot;centered&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Hero&quot;},
+  &quot;defaultLang&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;es&quot;, &quot;en&quot;], &quot;default&quot;: &quot;es&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Contenido&quot;},
+  &quot;reducedMotion&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Animación&quot;}
+}">
+class Component extends DCLogic {
+  state = { menuOpen: false, lang: 'es', isMobile: false };
+
+  static I18N = {
+    nav_nosotros: ['Nosotros', 'About'],
+    nav_servicios: ['Servicios', 'Services'],
+    nav_portafolio: ['Portafolio', 'Portfolio'],
+    nav_planes: ['Planes', 'Plans'],
+    nav_cta: ['Empezar', 'Get started'],
+    hero_badge: ['Publicidad + Desarrollo de software', 'Advertising + Software development'],
+    hero_t1: ['Creamos ideas que generan ', 'We create ideas that generate '],
+    hero_t2: ['GRANDES', 'BIG'],
+    hero_t3: [' negocios', ' business'],
+    hero_sub: ['Cumplimos los objetivos comerciales de nuestros clientes con un enfoque creativo y tecnológicamente moderno.', 'We meet our clients\u2019 business goals with a creative, technologically modern approach.'],
+    hero_cta1: ['¿Cuándo empezamos?', 'When do we start?'],
+    hero_cta2: ['Ver servicios', 'See services'],
+    hero_chip1: ['Campañas 360º', '360º campaigns'],
+    hero_chip2: ['Clientes de USA a Panamá', 'Clients from USA to Panama'],
+    hero_b1: ['Ideas', 'Ideas'],
+    hero_b2: ['que generan', 'that generate'],
+    hero_b3: ['Grandes', 'Big'],
+    hero_b4: ['Negocios.', 'Business.'],
+    about_label: ['Nosotros', 'About us'],
+    about_h2: ['Tu aliado estratégico a largo plazo', 'Your long-term strategic ally'],
+    mision_t: ['Misión', 'Mission'],
+    mision_p: ['Cumplir los objetivos comerciales de nuestros clientes con un enfoque creativo y tecnológicamente moderno.', 'Meet our clients\u2019 business objectives with a creative and technologically modern approach.'],
+    vision_t: ['Visión', 'Vision'],
+    vision_p: ['Ser aliado estratégico de nuestros clientes a largo plazo.', 'Be our clients\u2019 long-term strategic ally.'],
+    pillar1_p: ['Equipo multidisciplinario que trabaja en pro de tu marca.', 'A multidisciplinary team working for your brand.'],
+    pillar2_t: ['Portafolio integral', 'Full-range portfolio'],
+    pillar2_p: ['Múltiples soluciones para diferentes medios publicitarios.', 'Multiple solutions across advertising media.'],
+    pillar3_t: ['Innovación', 'Innovation'],
+    pillar3_p: ['Pensamos fuera de la caja, usando la tecnología como un boost de la creatividad.', 'We think outside the box, using technology as a boost for creativity.'],
+    pillar4_t: ['Regionalización', 'Regional reach'],
+    pillar4_p: ['Contamos con clientes desde USA hasta Panamá.', 'We serve clients from the USA to Panama.'],
+    serv_label: ['Servicios', 'Services'],
+    serv_h2: ['Soluciones para cada medio y cada objetivo', 'Solutions for every medium and every goal'],
+    serv_sub: ['Cada campaña es una estrategia hecha a la medida: integramos ATL, BTL, social media y tecnología.', 'Every campaign is a tailor-made strategy: we integrate ATL, BTL, social media and technology.'],
+    s1_t: ['Social Media', 'Social Media'],
+    s1_p: ['Captamos la atención de tu público en las diferentes redes sociales. Un gran reto, pero con creatividad todo es posible.', 'We capture your audience\u2019s attention across social networks. A big challenge — but with creativity, everything is possible.'],
+    s2_t: ['Campañas 360º', '360º Campaigns'],
+    s2_p: ['Estrategias a la medida que integran medios tradicionales y nuevos canales de comunicación.', 'Tailor-made strategies integrating traditional media and new communication channels.'],
+    s3_t: ['Webinars', 'Webinars'],
+    s3_p: ['Transformamos educación en ventas: atrae, educa y convierte prospectos en clientes.', 'We turn education into sales: attract, educate and convert prospects into clients.'],
+    s4_t: ['Chatbot IA', 'AI Chatbot'],
+    s4_p: ['Atención automatizada 24/7 que convierte el interés en ventas, con embudos y seguimiento de leads.', '24/7 automated attention that turns interest into sales, with funnels and lead follow-up.'],
+    s5_t: ['Impresión y DOOH', 'Print & DOOH'],
+    s5_p: ['Impresión en pequeño y GRAN formato, y publicidad exterior digital para una diferenciación visual.', 'Small and LARGE format printing, plus digital out-of-home for visual differentiation.'],
+    s6_t: ['Desarrollo de software', 'Software development'],
+    s6_p: ['Usamos la tecnología como un boost de la creatividad: web, automatización y herramientas a la medida.', 'We use technology as a creativity boost: web, automation and custom tools.'],
+    port_label: ['Portafolio', 'Portfolio'],
+    port_h2: ['Marcas que confían en nosotros', 'Brands that trust us'],
+    port_p: ['Clientes desde USA hasta Panamá, en retail, industria, servicios y más.', 'Clients from the USA to Panama, in retail, industry, services and more.'],
+    plan_label: ['Planes', 'Plans'],
+    plan_h2: ['Ni caro, ni barato… rentable', 'Not cheap, not expensive… profitable'],
+    plan_p: ['Paquetes pensados para generar leads y ventas. El presupuesto de pauta es aparte del fee mensual.', 'Packages built to generate leads and sales. Ad spend is separate from the monthly fee.'],
+    pl1_p: ['Tráfico y conversión digital con un embudo completo.', 'Digital traffic and conversion with a complete funnel.'],
+    pl1_b1: ['TikTok: contenido optimizado para alcance masivo orgánico', 'TikTok: content optimized for massive organic reach'],
+    pl1_b2: ['Meta Ads: consideración y remarketing', 'Meta Ads: consideration and remarketing'],
+    pl1_b3: ['Google Ads: intención de compra', 'Google Ads: purchase intent'],
+    pl1_b4: ['Pauta mensual sugerida de $200 (aparte del fee)', 'Suggested $200 monthly ad spend (separate from fee)'],
+    pl2_p: ['Eventos digitales de alto impacto para generar leads calificados.', 'High-impact digital events that generate qualified leads.'],
+    pl2_b1: ['Concepto, estructura y material gráfico del webinar', 'Webinar concept, structure and graphic material'],
+    pl2_b2: ['Campaña de convocatoria y chatbot de captación', 'Promotion campaign and lead-capture chatbot'],
+    pl2_b3: ['Soporte técnico integral en vivo', 'Full live technical support'],
+    pl2_b4: ['Seguimiento post-webinar, reportería y métricas', 'Post-webinar follow-up, reporting and metrics'],
+    plan_pop: ['Popular', 'Popular'],
+    pl3_p: ['Ventas 24/7: automatiza la atención y convierte prospectos en clientes.', '24/7 sales: automate attention and convert prospects into clients.'],
+    price_mo: ['/mes', '/mo'],
+    pl3_b1: ['Licencia de plataforma y configuración personalizada', 'Platform license and custom configuration'],
+    pl3_b2: ['Embudo de ventas automatizado', 'Automated sales funnel'],
+    pl3_b3: ['Seguimiento de leads y remarketing enfocado en ventas', 'Lead follow-up and sales-focused remarketing'],
+    pl3_b4: ['Reportería y métricas clave', 'Reporting and key metrics'],
+    pl4_t: ['Eventos', 'Events'],
+    pl4_p: ['Presencia estratégica donde ya existe intención comercial.', 'Strategic presence where commercial intent already exists.'],
+    pl4_b1: ['Identificación de espacios y gestión de participación', 'Venue identification and participation management'],
+    pl4_b2: ['Activación de marca en el evento', 'Brand activation at the event'],
+    pl4_b3: ['Captación de leads y seguimiento comercial', 'Lead capture and commercial follow-up'],
+    pl4_b4: ['Reporte de resultados y oportunidades', 'Results and opportunity reporting'],
+    price_custom: ['A la medida', 'Custom'],
+    price_custom2: ['A la medida', 'Custom'],
+    price_custom3: ['A la medida', 'Custom'],
+    plan_cta: ['Cotizar', 'Get a quote'],
+    plan_cta2: ['Cotizar', 'Get a quote'],
+    plan_cta3: ['Empezar ahora', 'Start now'],
+    plan_cta4: ['Cotizar', 'Get a quote'],
+    faq_h2: ['Preguntas frecuentes', 'Frequently asked questions'],
+    f1_q: ['¿La pauta publicitaria está incluida en el fee mensual?', 'Is ad spend included in the monthly fee?'],
+    f1_a: ['No, el presupuesto de pauta es aparte del fee mensual. Así puedes escalar la inversión publicitaria según los resultados.', 'No — the ad budget is separate from the monthly fee, so you can scale your investment based on results.'],
+    f2_q: ['¿En qué plataformas trabajan?', 'Which platforms do you work with?'],
+    f2_a: ['TikTok, Meta, Google Ads, LinkedIn y Spotify Ads, además de medios tradicionales, impresión y publicidad exterior. Más puntos de contacto = más oportunidades de venta.', 'TikTok, Meta, Google Ads, LinkedIn and Spotify Ads, plus traditional media, print and out-of-home. More touchpoints = more sales opportunities.'],
+    f3_q: ['¿Trabajan fuera de El Salvador?', 'Do you work outside El Salvador?'],
+    f3_a: ['Sí. Contamos con clientes desde USA hasta Panamá y adaptamos cada estrategia a su mercado.', 'Yes. We serve clients from the USA to Panama, adapting each strategy to its market.'],
+    f4_q: ['¿Los precios incluyen IVA?', 'Do prices include VAT?'],
+    f4_a: ['Los precios se muestran sin IVA; el impuesto se detalla aparte en cada propuesta.', 'Prices are shown without VAT; the tax is itemized separately in each proposal.'],
+    f5_q: ['¿Cómo empezamos?', 'How do we start?'],
+    f5_a: ['Escríbenos y agendamos una reunión para conocer tus objetivos. En la primera semana recibes una propuesta hecha a la medida.', 'Write to us and we\u2019ll schedule a meeting to learn your goals. Within the first week you get a tailor-made proposal.'],
+    cta_h2: ['¿Cuándo empezamos?', 'When do we start?'],
+    cta_p: ['Cuéntanos tus objetivos comerciales y te proponemos una estrategia rentable, hecha a la medida.', 'Tell us your business goals and we\u2019ll propose a profitable, tailor-made strategy.'],
+    cta_btn: ['Escríbenos — www.padsv.com', 'Write to us — www.padsv.com'],
+    foot_tag: ['Creamos ideas que generan GRANDES negocios.', 'We create ideas that generate BIG business.'],
+    foot_nosotros: ['Nosotros', 'About'],
+    foot_servicios: ['Servicios', 'Services'],
+    foot_planes: ['Planes', 'Plans']
+  };
+
+  componentDidMount() {
+    this.mq = window.matchMedia('(max-width: 900px)');
+    this.onMq = () => this.setState({ isMobile: this.mq.matches });
+    if (this.mq.addEventListener) this.mq.addEventListener('change', this.onMq);
+    this.onMq();
+    if ((this.props.defaultLang ?? 'es') === 'en') {
+      this.setState({ lang: 'en' });
+      setTimeout(() => this.applyLang('en'), 60);
+    }
+    if (!(this.props.reducedMotion ?? false)) {
+      setTimeout(() => this.setupReveal(), 80);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.mq && this.mq.removeEventListener) this.mq.removeEventListener('change', this.onMq);
+    if (this.revealCheck) {
+      document.removeEventListener('scroll', this.revealCheck, true);
+      window.removeEventListener('resize', this.revealCheck);
+    }
+    if (this.revealTimer) clearInterval(this.revealTimer);
+  }
+
+  setupReveal() {
+    const els = Array.from(document.querySelectorAll('[data-reveal]'));
+    if (!els.length) return;
+    els.forEach((el) => {
+      const n = parseInt(el.getAttribute('data-reveal') || '0', 10);
+      el.style.transition = 'opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1)';
+      el.style.transitionDelay = (n * 0.08) + 's';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(26px)';
+    });
+    const pending = new Set(els);
+    this.revealCheck = () => {
+      if (!pending.size) return;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      pending.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.94 && r.bottom > 0) {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          pending.delete(el);
+        }
+      });
+      if (!pending.size && this.revealTimer) { clearInterval(this.revealTimer); this.revealTimer = null; }
+    };
+    document.addEventListener('scroll', this.revealCheck, { capture: true, passive: true });
+    window.addEventListener('resize', this.revealCheck);
+    this.revealTimer = setInterval(this.revealCheck, 400);
+    this.revealCheck();
+  }
+
+  applyLang(lang) {
+    const i = lang === 'en' ? 1 : 0;
+    for (const [key, vals] of Object.entries(Component.I18N)) {
+      document.querySelectorAll('[data-i18n="' + key + '"]').forEach((el) => {
+        el.textContent = vals[i];
+      });
+    }
+    document.documentElement.lang = lang;
+  }
+
+  renderVals() {
+    const variant = this.props.heroVariant ?? 'centered';
+    const lang = this.state.lang;
+    return {
+      desktop: !this.state.isMobile,
+      mobile: this.state.isMobile,
+      menuOpen: this.state.menuOpen,
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      langLabel: lang === 'es' ? 'EN' : 'ES',
+      toggleLang: () => {
+        const next = lang === 'es' ? 'en' : 'es';
+        this.setState({ lang: next });
+        this.applyLang(next);
+      },
+      heroCentered: variant === 'centered',
+      heroSplit: variant === 'split',
+      heroBold: variant === 'bold'
+    };
+  }
+}
+</script>
+</body>
+</html>
