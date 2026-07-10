@@ -23,6 +23,7 @@
     hero_sub: ['Cumplimos los objetivos comerciales de nuestros clientes con un enfoque creativo y tecnológicamente moderno.', 'We meet our clients’ business goals with a creative, technologically modern approach.'],
     hero_cta1: ['¿Cuándo empezamos?', 'When do we start?'],
     hero_cta2: ['Ver servicios', 'See services'],
+    can_hint: ['Arrastra para girar', 'Drag to rotate'],
     about_label: ['Nosotros', 'About us'],
     about_h2: ['Tu aliado estratégico a largo plazo', 'Your long-term strategic ally'],
     mision_t: ['Misión', 'Mission'],

@@ -286,16 +286,56 @@ img { max-width: 100%; display: block; }
 @keyframes floatA { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px,-50px); } }
 @keyframes floatB { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px,40px); } }
 
+/* Split hero: copy left, 3D can right. Collapses to a single
+   centered column below the nav breakpoint. */
 .hero__inner {
   position: relative;
-  max-width: 1000px;
+  max-width: var(--wrap);
   margin: 0 auto;
-  padding: clamp(150px, 22vh, 220px) var(--gutter) clamp(90px, 14vh, 150px);
-  text-align: center;
+  padding: clamp(130px, 20vh, 190px) var(--gutter) clamp(80px, 12vh, 130px);
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: clamp(32px, 5vw, 64px);
+}
+/* min-width:0 — without it a grid track grows to fit the canvas's
+   intrinsic width, which feeds back into the renderer's resize. */
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  min-width: 0;
+}
+
+.hero__visual {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 14px;
+  min-width: 0;
+}
+.can {
+  width: 100%;
+  height: clamp(340px, 46vh, 520px);
+  border-radius: 24px;
+  outline-offset: 6px;
+}
+/* The renderer sizes the drawing buffer, CSS sizes the box. */
+.can canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.can__hint {
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  user-select: none;
 }
 
 .badge {
@@ -315,14 +355,14 @@ img { max-width: 100%; display: block; }
   margin: 0;
   font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(38px, 7vw, 76px);
-  line-height: 1.08;
+  font-size: clamp(36px, 5.2vw, 60px);
+  line-height: 1.1;
   letter-spacing: -0.02em;
   text-wrap: balance;
 }
 .hero__sub {
   margin: 0;
-  max-width: 640px;
+  max-width: 540px;
   color: var(--text-2);
   font-size: clamp(16px, 2vw, 19px);
   line-height: 1.6;
@@ -332,7 +372,6 @@ img { max-width: 100%; display: block; }
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  justify-content: center;
   margin-top: 8px;
 }
 
@@ -625,6 +664,13 @@ img { max-width: 100%; display: block; }
 @media (max-width: 900px) {
   .nav__links, .nav__cta { display: none; }
   .burger { display: flex; }
+
+  /* stack the hero: copy above the can, everything centered */
+  .hero__inner { grid-template-columns: 1fr; text-align: center; }
+  .hero__copy { align-items: center; }
+  .hero__sub { margin-inline: auto; }
+  .hero__ctas { justify-content: center; }
+  .can { height: clamp(300px, 42vh, 380px); }
 }
 
 @media (min-width: 901px) {
