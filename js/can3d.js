@@ -19,7 +19,7 @@ const BODY_H = 2.5;      // body height
 const REPEATS = 3;       // wordmarks around the circumference
 
 function makeLabelTexture() {
-  const w = 3072;
+  const w = 6072;
   const h = Math.round(w * BODY_H / (2 * Math.PI * R));
   const c = document.createElement('canvas');
   c.width = w;
