@@ -85,8 +85,32 @@ Flex row (wrap, space-between): logo + tagline "Creamos ideas que generan GRANDE
 - Logo is pure text ("pixels" + "."), no image file.
 
 ## Files
-- `Pixels Website.dc.html` — full design source: template (all markup + inline styles) and logic class (i18n dictionary with complete ES/EN copy, scroll reveal, menu, language toggle).
+- `design/Pixels Website.dc.html` — full design source: template (all markup + inline styles) and logic class (i18n dictionary with complete ES/EN copy, scroll reveal, menu, language toggle). **Reference only — it cannot render in a browser** (it needs the `support.js` runtime, and its `<sc-if>` conditionals are inert outside that environment).
 - Copy source: original agency PDF (padsv.com proposal) — copy in the i18n map was extracted/adapted from it.
+
+## Implementation
+The spec above is implemented as a plain static site — no build step, no dependencies.
+
+```
+index.html          all markup, semantic sections
+css/styles.css      design tokens as custom properties, then components
+js/main.js          ES/EN toggle, mobile menu, IntersectionObserver reveal
+assets/logos/       8 placeholder client logos (swap for the real files)
+design/             original design-component source, for reference
+```
+
+Hero ships the **centered** variant (variant A, the spec default). Variants B and C live in the
+design source if they're ever needed.
+
+Run it locally with any static server, e.g. `python3 -m http.server 8000`, then open
+<http://localhost:8000>. Opening `index.html` via `file://` also works.
+
+### Known deviations from the spec
+- Nav collapse is a CSS media query at 900px rather than a JS `isMobile` flag — same breakpoint, no layout shift on load.
+- The FAQ `+` marker rotates 45° when its item opens. The spec only defines the static `+`.
+- Two spec colors fall below WCAG AA (4.5:1) for normal-size text on `#170824`: the footer copyright
+  `#7E6B93` (**4.02:1**) and accent magenta `#E0218A` (**4.34:1**), both used at 13px. Left as
+  specified, since colors are marked final — worth raising with the client.
 
 ## Deployment target (context)
 Static hosting on **AWS S3 + CloudFront**. Build should output plain static files (index.html + assets). Recommended: enable CloudFront compression, HTTP→HTTPS redirect, and a cache policy with long TTL for hashed assets / short TTL for index.html. If SPA-style routing is used, map 403/404 → /index.html.
