@@ -1,0 +1,18 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # allow manual runs from the Actions tab
+
+jobs:
+  ci:
+    uses: acid0ikario/homelab-ci/.github/workflows/build-and-deploy.yml@main
+    permissions:
+      contents: read
+      packages: write
+    with:
+      image-name: webpixel
+      workload-path: workloads/webpixel
+      run-tests: false          # static site, nothing to test
+    secrets:
+      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}

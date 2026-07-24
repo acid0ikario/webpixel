@@ -9,129 +9,34 @@ const mount = document.getElementById('can3d');
 if (mount) init(mount);
 
 /* ------------------------------------------------------------
-   Label artwork, drawn to a canvas and wrapped around the body.
-   Texture aspect matches the body's circumference / height so the
-   wordmark doesn't stretch.
+   Label artwork: the real product label, un-projected from the
+   studio renders into one flat 360° strip (see assets/can/). Its
+   aspect (~1.08:1, w/h) sets the body proportions below so the
+   artwork wraps without stretching.
    ------------------------------------------------------------ */
-// A 330ml can is ~66mm across and ~122mm tall: a body ratio near 1.85:1.
-const R = 0.68;          // body radius
-const BODY_H = 2.5;      // body height
-const REPEATS = 3;       // wordmarks around the circumference
+// Sleek 473ml proportions: a tall, slim body so the flat label wraps true.
+const R = 0.66;          // body radius
+const BODY_H = 3.6;      // body height
+// Slide the strip so the `pixels.` panel faces the camera at rest.
+const LABEL_OFFSET = 0.173;
 
-function makeLabelTexture() {
-  const w = 6072;
-  const h = Math.round(w * BODY_H / (2 * Math.PI * R));
-  const c = document.createElement('canvas');
-  c.width = w;
-  c.height = h;
-  const ctx = c.getContext('2d');
-
-  // Deep purple rather than the page background, so the can separates
-  // from the hero behind it instead of reading as a black cylinder.
-  const bg = ctx.createLinearGradient(0, 0, 0, h);
-  bg.addColorStop(0, '#2B1142');
-  bg.addColorStop(0.5, '#200C31');
-  bg.addColorStop(1, '#2B1142');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, w, h);
-
-  // thin brand stripes near the rims
-  const stripe = (y, thickness) => {
-    const g = ctx.createLinearGradient(0, 0, w, 0);
-    for (let i = 0; i <= REPEATS * 2; i++) {
-      g.addColorStop(i / (REPEATS * 2), i % 2 ? '#E0218A' : '#4AA3DF');
-    }
-    ctx.fillStyle = g;
-    ctx.fillRect(0, y, w, thickness);
-  };
-  stripe(h * 0.10, h * 0.011);
-  stripe(h * 0.885, h * 0.011);
-
-  const cell = w / REPEATS;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  // Fit the wordmark to its cell rather than guessing a size: measure at a
-  // reference size, then scale so it fills ~72% of the cell width.
-  const REF = 100;
-  ctx.font = `800 ${REF}px Sora, system-ui, sans-serif`;
-  const refW = ctx.measureText('pixels.').width;
-  const fontPx = Math.min(Math.round(REF * (cell * 0.88) / refW), Math.round(h * 0.42));
-
-  for (let i = 0; i < REPEATS; i++) {
-    const cx = cell * (i + 0.5);
-    const cy = h * 0.46;
-
-    ctx.font = `800 ${fontPx}px Sora, system-ui, sans-serif`;
-    const wordW = ctx.measureText('pixels').width;
-    const dotW = ctx.measureText('.').width;
-    const totalW = wordW + dotW;
-    const left = cx - totalW / 2;
-
-    // gradient runs across the wordmark, exactly like the logo
-    const g = ctx.createLinearGradient(left, 0, left + wordW, 0);
-    g.addColorStop(0, '#4AA3DF');
-    g.addColorStop(1, '#E0218A');
-
-    ctx.fillStyle = g;
-    ctx.fillText('pixels', left + wordW / 2, cy);
-
-    ctx.fillStyle = '#E0218A';
-    ctx.fillText('.', left + wordW + dotW / 2, cy);
-
-    // tagline, clear of the wordmark's descenders — "GRANDES" gets the
-    // wordmark's gradient treatment, same as the hero headline.
-    const tagPre = 'Creamos ideas que generan ';
-    const tagHi = 'GRANDES';
-    const tagPost = ' negocios';
-    const tagY = cy + fontPx * 0.78;
-    let tagPx = Math.round(fontPx * 0.2);
-
-    const fontFor = (px, weight) => `${weight} ${px}px Manrope, system-ui, sans-serif`;
-    let preW, hiW, postW, tagTotalW;
-    const measure = () => {
-      ctx.font = fontFor(tagPx, 700);
-      preW = ctx.measureText(tagPre).width;
-      postW = ctx.measureText(tagPost).width;
-      ctx.font = fontFor(tagPx, 800);
-      hiW = ctx.measureText(tagHi).width;
-      tagTotalW = preW + hiW + postW;
-    };
-    measure();
-    const maxTagW = cell * 0.92;
-    if (tagTotalW > maxTagW) {
-      tagPx = Math.round(tagPx * maxTagW / tagTotalW);
-      measure();
-    }
-
-    ctx.textAlign = 'left';
-    let tx = cx - tagTotalW / 2;
-
-    ctx.font = fontFor(tagPx, 700);
-    ctx.fillStyle = 'rgba(238,231,247,0.96)';
-    ctx.fillText(tagPre, tx, tagY);
-    tx += preW;
-
-    ctx.font = fontFor(tagPx, 800);
-    const hiGrad = ctx.createLinearGradient(tx, 0, tx + hiW, 0);
-    hiGrad.addColorStop(0, '#4AA3DF');
-    hiGrad.addColorStop(1, '#E0218A');
-    ctx.fillStyle = hiGrad;
-    ctx.fillText(tagHi, tx, tagY);
-    tx += hiW;
-
-    ctx.font = fontFor(tagPx, 700);
-    ctx.fillStyle = 'rgba(238,231,247,0.96)';
-    ctx.fillText(tagPost, tx, tagY);
-
-    ctx.textAlign = 'center';
-  }
-
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 8;
-  tex.wrapS = THREE.RepeatWrapping;
-  return tex;
+function loadLabelTexture() {
+  const url = new URL('../assets/can/label.png', import.meta.url).href;
+  return new Promise((resolve) => {
+    new THREE.TextureLoader().load(
+      url,
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = 8;
+        tex.wrapS = THREE.RepeatWrapping;      // seam is the dark panel-fold
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        tex.offset.x = LABEL_OFFSET;
+        resolve(tex);
+      },
+      undefined,
+      () => resolve(null)                       // missing art: plain body below
+    );
+  });
 }
 
 /* ------------------------------------------------------------
@@ -163,10 +68,11 @@ function buildCan(labelTex) {
   const metal = new THREE.MeshStandardMaterial({
     color: 0xdfe1ea, metalness: 0.98, roughness: 0.26
   });
-  // Keep the label mostly dielectric — high metalness swallows the artwork.
-  const label = new THREE.MeshStandardMaterial({
-    map: labelTex, metalness: 0.18, roughness: 0.5
-  });
+  // The label art already carries its own highlights and droplets, so keep the
+  // surface mostly matte/dielectric — reflections on top would fight the print.
+  const label = labelTex
+    ? new THREE.MeshStandardMaterial({ map: labelTex, metalness: 0.12, roughness: 0.58 })
+    : new THREE.MeshStandardMaterial({ color: 0x2B1142, metalness: 0.12, roughness: 0.58 });
 
   const body = new THREE.Mesh(
     new THREE.CylinderGeometry(R, R, BODY_H, 128, 1, true), label
@@ -229,10 +135,7 @@ async function init(mount) {
     return;
   }
 
-  // Sora has to be resident before the label is rasterized.
-  if (document.fonts && document.fonts.ready) {
-    try { await document.fonts.ready; } catch (e) { /* draw with fallback */ }
-  }
+  const labelTex = await loadLabelTexture();
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
@@ -258,8 +161,9 @@ async function init(mount) {
   fill.position.set(0, -3, 2);
   scene.add(fill);
 
-  const can = buildCan(makeLabelTexture());
-  can.rotation.set(0.12, 0.6, 0.06);
+  const can = buildCan(labelTex);
+  can.scale.setScalar(0.82);          // the sleek body is tall; fit it to the frame
+  can.rotation.set(0.10, 0.0, 0.04);
   scene.add(can);
 
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
