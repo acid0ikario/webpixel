@@ -1,0 +1,6 @@
+.github
+.dockerignore
+Dockerfile
+nginx.conf
+design
+README.md
